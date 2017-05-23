@@ -17,7 +17,7 @@ The goals / steps of this project are the following:
 [image2]: ./output_images/calibration3_corners.jpg "Detected Corners"
 [image3]: ./output_images/cal3_undistorted.jpg "Undistorted Image"
 [image4]: ./test_images/test2.jpg "Test Image"
-[image5]: ./output_images/test_2_undist.jpg "Undistorted Test Image"
+[image5]: ./output_images/test2_undist.jpg "Undistorted Test Image"
 
 [video1]: ./project_video.mp4 "Video"
 
