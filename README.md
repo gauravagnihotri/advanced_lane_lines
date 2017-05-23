@@ -29,15 +29,18 @@ The code for this step is contained in the Part 1 of 'adv_lane_lines.py' file.
 The objpoints and img point arrays are initiated as empty arrays. The calibration image file is read using ```cv2.imread``` function.
 The ```cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)``` function converts a 3 channel colored image to a grayscale image. ```cv2.findChessboardCorners(gray, (nx, ny), None)``` function with correct gird parameters (in this case 6x9 corners) results into detected corners stored in an array which is then appended to imgpoints. The object points is prepared using ```np.mgrid[0:9,0:6].T.reshape(-1,2)``` which is further appended to objpoints. 
 
-The object point and image point matrices are then used to perform calibration on the camera using the function ```cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)```. The calibratecamera function returns distortion coefficients (dist), camera matrix (mtx), rotation and translation vectors (rvecs and tvecs).
+The object point and image point matrices are then used to perform calibration on the camera using the function ```cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)```. The cv2.calibrateCamera function returns distortion coefficients (dist), camera matrix (mtx), rotation and translation vectors (rvecs and tvecs).
 
 The distortion coefficients along with camera matrix is used to undistort an image
  ```undist = cv2.undistort(img, mtx, dist, None, mtx)``` 
 This returns an image (undist) which is free of any kind of distortion.
 
+The camera is calibrated only once, the calibration coefficients are then stored in a pickle file named ```calibration_pickle.p```
+
 | Raw Calibration Image | Detected Corners | Undistorted Image |
 |:---:|:---:|:---:|
 | ![alt text][image1] | ![alt text][image2] | ![alt text][image3] |
+*Figures show the raw calibration image, calibration image with detected corners and the image after applying undistortion function.*
 
 ### Pipeline (single images)
 
