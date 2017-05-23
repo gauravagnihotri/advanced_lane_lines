@@ -40,6 +40,7 @@ The camera is calibrated only once, the calibration coefficients are then stored
 | Raw Calibration Image | Detected Corners | Undistorted Image |
 |:---:|:---:|:---:|
 | ![alt text][image1] | ![alt text][image2] | ![alt text][image3] |
+
 *Figures show the raw calibration image, calibration image with detected corners and the image after applying undistortion function.*
 
 ### Pipeline (single images)
