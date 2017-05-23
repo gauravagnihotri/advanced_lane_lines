@@ -47,15 +47,22 @@ The camera is calibrated only once, the calibration coefficients are then stored
 
 #### 1. Provide an example of a distortion-corrected image.
 
-The ```cv2.undistort``` function is incorporated in the pipeline, so that distortion correction is applied to each image before further processing. 
+The ```cv2.undistort``` function is incorporated in the pipeline, so that distortion correction is applied to each image. 
 
 | Raw Camera Image | Undistorted Image |
 |:---:|:---:|
 | ![alt text][image4] | ![alt text][image5] |
 
-*Figures show the raw camera image and the image after applying distortion correction*
+*Figures show the raw camera image and the image after applying distortion correction. The car on the corner of the raw image is not visible in undistorted*
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
+
+After performing distortion correction, following combinations of thresholding functions are used to minimize everything but the lane lines.
+1. ```gradx = abs_sobel_thresh(inp_img, orient='x', sobel_kernel=ksize, thresh=(100, 100))``` Sobel Operator in X (line 212) 
+2. ```grady = abs_sobel_thresh(inp_img, orient='y', sobel_kernel=ksize, thresh=(85, 100))``` Sobel Operator in X (line 213)
+3. ```mag_binary = mag_thresh(inp_img, sobel_kernel=ksize, mag_thresh=(85, 150))``` Magnitude threshold (function mag_thresh - line 122 through 138)
+4. ```dir_binary = dir_threshold(inp_img, sobel_kernel=ksize, thresh=(0.7, 1.4))``` Direction threshold (function dir_threshold - line 139 through 152)
+5. ```color_binary = color_threshold(inp_img, s_thresh=(95, 255), v_thresh=(200, 255))#130,255 100,255``` Color Thresholding (function color_threshold - line 153 through 169)
 
 I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
 
