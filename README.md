@@ -19,6 +19,7 @@ The goals / steps of this project are the following:
 [image4]: ./test_images/test2.jpg "Test Image"
 [image5]: ./output_images/test2_undist.jpg "Undistorted Test Image"
 [image6]: ./output_images/test2_thresh_F.jpg "Thesholded Test Image"
+[image7]: ./output_images/test2_overlayed.jpg "Mask Overlayed Image"
 [video1]: ./project_video.mp4 "Video"
 
 ### Camera Calibration
@@ -77,29 +78,22 @@ The color thresholding uses the HLS and HSV colorspaces for applying thresholds 
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+The code for perspective transform is built into the pipeline and uses an hardcoded source (src) and destination (dst) matrix. 
 
-```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
+```src = np.float32([[575,464],[707,464],[1049,682],[258,682]])```
+```
+offset = 250
+dst = np.float32([[offset, 0], [img_size[0] - offset, 0], [img_size[0] - offset, img_size[1]], [offset, img_size[1]]])
 ```
 
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+| 575, 464      | 250, 0        | 
+| 707, 464      | 1030, 0      |
+| 1049, 682     | 1030, 720      |
+| 258, 682      | 250, 720        |
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
