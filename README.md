@@ -18,7 +18,7 @@ The goals / steps of this project are the following:
 [image3]: ./output_images/cal3_undistorted.jpg "Undistorted Image"
 [image4]: ./test_images/test2.jpg "Test Image"
 [image5]: ./output_images/test2_undist.jpg "Undistorted Test Image"
-
+[image6]: ./output_images/test2_thresh_F.jpg "Thesholded Test Image"
 [video1]: ./project_video.mp4 "Video"
 
 ### Camera Calibration
@@ -53,7 +53,7 @@ The ```cv2.undistort``` function is incorporated in the pipeline, so that distor
 |:---:|:---:|
 | ![alt text][image4] | ![alt text][image5] |
 
-*Figures show the raw camera image and the image after applying distortion correction. The car on the corner of the raw image is not visible in undistorted*
+*Figures show the raw camera image and the image after applying distortion correction. The car on the corner of the raw image is not visible in undistorted image*
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
@@ -64,9 +64,16 @@ After performing distortion correction, following combinations of thresholding f
 4. ```dir_binary = dir_threshold(inp_img, sobel_kernel=ksize, thresh=(0.7, 1.4))``` Direction threshold (function dir_threshold - line 139 through 152)
 5. ```color_binary = color_threshold(inp_img, s_thresh=(95, 255), v_thresh=(200, 255))#130,255 100,255``` Color Thresholding (function color_threshold - line 153 through 169)
 
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+The sobel X and Y operators perform derivative operation in X and Y direction. 
+The magnitude thresholding is gradient of the square root of the sum of squares of the individual x and y. This type of thresholding smooths over the noisy intensity fluctuations on the small scale. [1] 
+'The direction of the gradient is simply the inverse tangent (arctangent) of the y gradient divided by the x gradient' [2] The direction gradient helps in picking out the particular feature from the image (in this case, the lane lines)[2]
+The color thresholding uses the HLS and HSV colorspaces for applying thresholds for a particular color value. In this case, I have used the combination of S and V color thresholding. The function ```color_threshold``` uses ```cv2.cvtColor(img, cv2.COLOR_BGR2HLS)``` and ```cv2.cvtColor(img, cv2.COLOR_BGR2HSV)``` to convert the image to HLS and HSV color spaces. Each image is then thresholded for S and V channel.  
 
-![alt text][image3]
+| Undistorted Image | Thresholded Image |
+|:---:|:---:|
+| ![alt text][image5] | ![alt text][image6] |
+
+*Figures show the camera image after applying distortion correction and thresholded image after applying the combined thresholds*
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
@@ -129,3 +136,7 @@ Here's a [link to my video result](./project_video.mp4)
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+
+### References 
+[1] Lesson 22 Magnitude of the Gradient - Project: Advanced Lane Finding 
+[2] Lesson 23 Direction of the Gradient - Project: Advanced Lane Finding 
