@@ -23,7 +23,7 @@ objpoints = [] #3D points in real world space
 imgpoints = [] #2D points in image plane
 ii=0
 for fname in images:
-    print('reading image',ii)
+    #print('reading image',ii)
     img = cv2.imread(fname)
     #fig = plt.figure(figsize=(12,15))
     #plt.imshow(img)
@@ -35,7 +35,7 @@ for fname in images:
     ret, corners = cv2.findChessboardCorners(gray, (nx, ny), None)
     ii+=1
     if ret == True:
-        print('corners detected')
+        #print('corners detected')
         imgpoints.append(corners)
         objpoints.append(objp)
         #fig1 = plt.figure(figsize=(12,15))
@@ -55,13 +55,14 @@ with open(os.getcwd() + '/calibration_pickle.p','wb') as f:
 '''
 the following code can undistort camera calibration images
 '''
-#for fname in images:
-#    img = cv2.imread(fname)
-#    undist = cv2.undistort(img, mtx, dist, None, mtx)
-#    fig = plt.figure(figsize=(12,15))
-#    plt.imshow(img)
-#    fig1 = plt.figure(figsize=(12,15))
-#    plt.imshow(undist)
+for fname in images:
+    img = cv2.imread(fname)
+    undist = cv2.undistort(img, mtx, dist, None, mtx)
+    #fig = plt.figure(figsize=(12,15))
+    #plt.imshow(img)
+    #fig1 = plt.figure(figsize=(12,15))
+    #plt.imshow(undist)
+    cv2.imwrite(os.getcwd() +'/output_images/'+'undistorted.jpg',undist) 
 '''
 ret, mtx, dist, rvecs, tvecs - these arrays complete camera calibration
 ''' 
