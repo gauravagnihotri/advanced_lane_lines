@@ -16,9 +16,9 @@ The goals / steps of this project are the following:
 [image1]: ./camera_cal/calibration3.jpg "Raw Calibration Image"
 [image2]: ./output_images/calibration3_corners.jpg "Detected Corners"
 [image3]: ./output_images/cal3_undistorted.jpg "Undistorted Image"
-[image4]: ./examples/warped_straight_lines.jpg "Warp Example"
-[image5]: ./examples/color_fit_lines.jpg "Fit Visual"
-[image6]: ./examples/example_output.jpg "Output"
+[image4]: ./test_images/test3.jpg "Test Image"
+[image5]: ./output_images/test_3_undist.jpg "Undistorted Test Image"
+
 [video1]: ./project_video.mp4 "Video"
 
 ### Camera Calibration
@@ -41,14 +41,19 @@ The camera is calibrated only once, the calibration coefficients are then stored
 |:---:|:---:|:---:|
 | ![alt text][image1] | ![alt text][image2] | ![alt text][image3] |
 
-*Figures show the raw calibration image, calibration image with detected corners and the image after applying undistortion function.*
+*Figures show the raw calibration image, calibration image with detected corners and the image after applying distortion correction*
 
 ### Pipeline (single images)
 
 #### 1. Provide an example of a distortion-corrected image.
 
-To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
-![alt text][image2]
+The ```cv2.undistort``` function is incorporated in the pipeline, so that distortion correction is applied to each image before further processing. 
+
+| Raw Camera Image | Undistorted Image |
+|:---:|:---:|
+| ![alt text][image4] | ![alt text][image5] |
+
+*Figures show the raw camera image and the image after applying distortion correction*
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
