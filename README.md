@@ -20,6 +20,10 @@ The goals / steps of this project are the following:
 [image5]: ./output_images/test2_undist.jpg "Undistorted Test Image"
 [image6]: ./output_images/test2_thresh_F.jpg "Thesholded Test Image"
 [image7]: ./output_images/test2_overlayed.jpg "Mask Overlayed Image"
+[image8]: ./output_images/test2_warped.jpg "Warped Image"
+[image9]: ./output_images/output.jpg "Lane Line Identifiers"
+[image10]: ./output_images/output_1.jpg "Centroids of Lane Lines"
+[image11]: ./output_images/output_2.jpg "Curvefitted Line"
 [video1]: ./project_video.mp4 "Video"
 
 ### Camera Calibration
@@ -80,9 +84,9 @@ The color thresholding uses the HLS and HSV colorspaces for applying thresholds 
 
 The code for perspective transform is built into the pipeline and uses an hardcoded source (src) and destination (dst) matrix. 
 
-```src = np.float32([[575,464],[707,464],[1049,682],[258,682]])```
+```src = np.float32([[570,464],[710,464],[1084,682],[225,682]])```
 ```
-offset = 250
+offset = 200
 dst = np.float32([[offset, 0], [img_size[0] - offset, 0], [img_size[0] - offset, img_size[1]], [offset, img_size[1]]])
 ```
 
@@ -90,20 +94,36 @@ This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 575, 464      | 250, 0        | 
-| 707, 464      | 1030, 0      |
-| 1049, 682     | 1030, 720      |
-| 258, 682      | 250, 720        |
+| 570, 464      | 200, 0        | 
+| 710, 464      | 1080, 0       |
+| 1084, 682     | 1080, 720     |
+| 225, 682      | 200, 720      |
 
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
+To apply perspective transform, the 'M' matrix is first computed using ```M = cv2.getPerspectiveTransform(src, dst)```
+Similarly the Minv is also computed by swapping the src and dst matrices. 
 
-![alt text][image4]
+To warp an image the 'M' matrix is used with function ```cv2.warpPerspective``` 
+Lines 231 through 238 in my code perform the perspective transform
+
+| Source Points Overlayed | After applying Perspective Transform |
+|:---:|:---:|
+| ![alt text][image7] | ![alt text][image8] |
+
+*Figures show the bounding box used as source points and the resultant image after performing perspective transform*
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+The convolution method is used here to identify the lane lines. 
+Function ```find_window_centroids``` from line 201 thru	236 performs the image slicing, convolution to find the lane hotspots.
+The identified region is stored in left and right point matrices which are then used to perform a curvefit using ```np.polyfit``` of 2nd order.
+The curvefitted lines are the detected lane lines. 
 
-![alt text][image5]
+| Original Warped Image | Hot spots from the warped Image |
+|:---:|:---:|
+| ![alt text][image8] | ![alt text][image9] |
+| Centers of the regions of interest | Curvefitted line through the points |
+|:---:|:---:|
+| ![alt text][image10] | ![alt text][image11] |
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 

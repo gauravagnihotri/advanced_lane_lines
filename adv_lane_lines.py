@@ -1,12 +1,12 @@
 #importing some useful packages
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
+#import matplotlib.pyplot as plt
+#import matplotlib.image as mpimg
 import numpy as np
 import cv2
 import os
-import cv2
-from PIL import Image
-import math
+#import cv2
+#from PIL import Image
+#import math
 import fnmatch
 import glob
 import pickle
@@ -193,6 +193,47 @@ def region_of_interest(img, vertices):
 
 #input_imgs = glob.glob(os.getcwd() + '/test_images/test*.jpg')
 #input_imgs = glob.glob(os.getcwd() + '/test_images/straight_lines*.jpg')
+def window_mask(width, height, img_ref, center,level):
+        output = np.zeros_like(img_ref)
+        output[int(img_ref.shape[0]-(level+1)*height):int(img_ref.shape[0]-level*height),max(0,int(center-width/2)):min(int(center+width/2),img_ref.shape[1])] = 1
+        return output
+    
+def find_window_centroids(image, window_width, window_height, margin):
+    
+    window_centroids = [] # Store the (left,right) window centroid positions per level
+    window = np.ones(window_width) # Create our window template that we will use for convolutions
+    
+    # First find the two starting positions for the left and right lane by using np.sum to get the vertical image slice
+    # and then np.convolve the vertical image slice with the window template 
+    
+    # Sum quarter bottom of image to get slice, could use a different ratio
+    l_sum = np.sum(image[int(3*image.shape[0]/4):,:int(image.shape[1]/2)], axis=0)
+    l_center = np.argmax(np.convolve(window,l_sum))-window_width/2
+    r_sum = np.sum(image[int(3*image.shape[0]/4):,int(image.shape[1]/2):], axis=0)
+    r_center = np.argmax(np.convolve(window,r_sum))-window_width/2+int(image.shape[1]/2)
+    
+    # Add what we found for the first layer
+    window_centroids.append((l_center,r_center))
+    
+    # Go through each layer looking for max pixel locations
+    for level in range(1,(int)(image.shape[0]/window_height)):
+	    # convolve the window into the vertical slice of the image
+	    image_layer = np.sum(image[int(image.shape[0]-(level+1)*window_height):int(image.shape[0]-level*window_height),:], axis=0)
+	    conv_signal = np.convolve(window, image_layer)
+	    # Find the best left centroid by using past left center as a reference
+	    # Use window_width/2 as offset because convolution signal reference is at right side of window, not center of window
+	    offset = window_width/2
+	    l_min_index = int(max(l_center+offset-margin,0))
+	    l_max_index = int(min(l_center+offset+margin,image.shape[1]))
+	    l_center = np.argmax(conv_signal[l_min_index:l_max_index])+l_min_index-offset
+	    # Find the best right centroid by using past right center as a reference
+	    r_min_index = int(max(r_center+offset-margin,0))
+	    r_max_index = int(min(r_center+offset+margin,image.shape[1]))
+	    r_center = np.argmax(conv_signal[r_min_index:r_max_index])+r_min_index-offset
+	    # Add what we found for that layer
+	    window_centroids.append((l_center,r_center))
+
+    return window_centroids
 
 def process_image(fname):
     #img = cv2.imread(fname)
@@ -223,15 +264,15 @@ def process_image(fname):
     #combined[(gradx == 1) | ((mag_binary == 1) & (dir_binary == 1)) | (color_binary == 1)] = 255
     # Plot the result
     inp_img = cv2.imread(os.getcwd() + '/output_images/thresh_F.jpg')
-    vertices = np.array([[(200,682),(550, 464), (775,464), (1200,682)]], dtype=np.int32) #was 725
-    masked_edges = region_of_interest(inp_img, vertices)
-    cv2.imwrite(os.getcwd() +'/output_images/'+'masked.jpg',masked_edges) 
-    inp_img = inp_img[:,:,::-1]
-    masked_edges=masked_edges[:,:,::-1]
-    inp_img = masked_edges
+    #vertices = np.array([[(200,682),(550, 464), (775,464), (1200,682)]], dtype=np.int32) #was 725
+    #masked_edges = region_of_interest(inp_img, vertices)
+    #cv2.imwrite(os.getcwd() +'/output_images/'+'masked.jpg',masked_edges) 
+    #inp_img = inp_img[:,:,::-1]
+    #masked_edges=masked_edges[:,:,::-1]
+    masked_edges = inp_img
     img_size = (inp_img.shape[1], inp_img.shape[0])
-    src = np.float32([[575,464],[707,464],[1049,682],[258,682]])
-    offset = 400 #300 wroks 
+    src = np.float32([[570,464],[710,464],[1084,682],[225,682]])
+    offset = 200 #300 wroks 
     dst = np.float32([[offset, 0], [img_size[0] - offset, 0], [img_size[0] - offset, img_size[1]], [offset, img_size[1]]])
     M = cv2.getPerspectiveTransform(src, dst)
     Minv = cv2.getPerspectiveTransform(dst, src)
@@ -239,51 +280,9 @@ def process_image(fname):
     cv2.imwrite(os.getcwd() +'/output_images/'+'warped.jpg',binary_warped) 
     binary_warped = cv2.cvtColor(binary_warped, cv2.COLOR_BGR2GRAY)
     # window settings
-    window_width = 25 
+    window_width = 40 
     window_height = 144 # Break image into 9 vertical layers since image height is 720
-    margin = 25 # How much to slide left and right for searching 25 works
-    
-    def window_mask(width, height, img_ref, center,level):
-        output = np.zeros_like(img_ref)
-        output[int(img_ref.shape[0]-(level+1)*height):int(img_ref.shape[0]-level*height),max(0,int(center-width/2)):min(int(center+width/2),img_ref.shape[1])] = 1
-        return output
-    
-    def find_window_centroids(image, window_width, window_height, margin):
-        
-        window_centroids = [] # Store the (left,right) window centroid positions per level
-        window = np.ones(window_width) # Create our window template that we will use for convolutions
-        
-        # First find the two starting positions for the left and right lane by using np.sum to get the vertical image slice
-        # and then np.convolve the vertical image slice with the window template 
-        
-        # Sum quarter bottom of image to get slice, could use a different ratio
-        l_sum = np.sum(binary_warped[int(3*binary_warped.shape[0]/4):,:int(binary_warped.shape[1]/2)], axis=0)
-        l_center = np.argmax(np.convolve(window,l_sum))-window_width/2
-        r_sum = np.sum(binary_warped[int(3*binary_warped.shape[0]/4):,int(binary_warped.shape[1]/2):], axis=0)
-        r_center = np.argmax(np.convolve(window,r_sum))-window_width/2+int(binary_warped.shape[1]/2)
-        
-        # Add what we found for the first layer
-        window_centroids.append((l_center,r_center))
-        
-        # Go through each layer looking for max pixel locations
-        for level in range(1,(int)(binary_warped.shape[0]/window_height)):
-    	    # convolve the window into the vertical slice of the image
-    	    image_layer = np.sum(binary_warped[int(binary_warped.shape[0]-(level+1)*window_height):int(binary_warped.shape[0]-level*window_height),:], axis=0)
-    	    conv_signal = np.convolve(window, image_layer)
-    	    # Find the best left centroid by using past left center as a reference
-    	    # Use window_width/2 as offset because convolution signal reference is at right side of window, not center of window
-    	    offset = window_width/2
-    	    l_min_index = int(max(l_center+offset-margin,0))
-    	    l_max_index = int(min(l_center+offset+margin,binary_warped.shape[1]))
-    	    l_center = np.argmax(conv_signal[l_min_index:l_max_index])+l_min_index-offset
-    	    # Find the best right centroid by using past right center as a reference
-    	    r_min_index = int(max(r_center+offset-margin,0))
-    	    r_max_index = int(min(r_center+offset+margin,binary_warped.shape[1]))
-    	    r_center = np.argmax(conv_signal[r_min_index:r_max_index])+r_min_index-offset
-    	    # Add what we found for that layer
-    	    window_centroids.append((l_center,r_center))
-    
-        return window_centroids
+    margin = 35 # How much to slide left and right for searching 25 works
     
     window_centroids = find_window_centroids(binary_warped, window_width, window_height, margin)
     
@@ -329,12 +328,29 @@ def process_image(fname):
     # Plot up the fake data
     # Fit a second order polynomial to pixel positions in each fake lane line
     leftx = leftx[::-1]  # Reverse to match top-to-bottom in y
-    rightx = rightx[::-1]  # Reverse to match top-to-bottom in y
-
+    rightx = rightx[::-1]  # Reverse to match top-to-bottom in y 
+    
     left_fit = np.polyfit(ploty, leftx, 2)
     left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
     right_fit = np.polyfit(ploty, rightx, 2)
-    right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
+    right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]    
+    ###
+    lft_line = np.column_stack((left_fitx,ploty))
+    rt_line = np.column_stack((right_fitx,ploty))
+    #cv2.circle(output,tuple(leftx),1,(255,0,0))
+    for index in range(0,len(ploty)):
+        #print(index)
+        cv2.circle(output,(int(leftx[index]),int(ploty[index])),10,(255,0,0),-1)
+        cv2.circle(output,(int(rightx[index]),int(ploty[index])),10,(0,0,255),-1)
+    cv2.imwrite(os.getcwd() +'/output_images/'+'output_1.jpg',output) 
+    cv2.polylines(output,np.int32([lft_line]),False,(255,0,0),15)
+    cv2.polylines(output,np.int32([rt_line]),False,(0,0,255),15)
+    for index in range(0,len(ploty)):
+        #print(index)
+        cv2.circle(output,(int(leftx[index]),int(ploty[index])),10,(255,255,255))
+        cv2.circle(output,(int(rightx[index]),int(ploty[index])),10,(0,0,0))
+    cv2.imwrite(os.getcwd() +'/output_images/'+'output_2.jpg',output) 
+    ###
     y_eval = np.max(ploty)
     # Define conversions in x and y from pixels space to meters
     ym_per_pix = 30/720 # meters per pixel in y dimension
@@ -389,10 +405,10 @@ def process_image(fname):
     cv2.fillPoly(color_warp_3, np.int_([rect_pt]), (255,255,255))
     result = cv2.addWeighted(result, 1, color_warp_3, 0.15, 0)
     font = cv2.FONT_HERSHEY_SIMPLEX
-    if left_curverad > 10000:
+    if (left_curverad+right_curverad)/2 > 5000:
         text = '~Straight Road'
     else:
-        text = 'Curve radius: ' + '{:04.2f}'.format(left_curverad) + 'm'
+        text = 'Curve radius: ' + '{:04.2f}'.format((left_curverad+right_curverad)/2) + 'm'
     cv2.putText(result, text, (20,50), font, 1.2, (0,0,0), 2, cv2.LINE_AA)
     direction = ''
     if center_dist > 0:
