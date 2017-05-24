@@ -352,7 +352,7 @@ def process_image(fname):
         cv2.circle(output,(int(rightx[index]),int(ploty[index])),10,(0,0,0))
     cv2.imwrite(os.getcwd() +'/output_images/'+'output_2.jpg',output) 
     ###
-    y_eval = np.max(ploty)
+    y_eval = np.max(ploty)/2
     # Define conversions in x and y from pixels space to meters
     ym_per_pix = 30/720 # meters per pixel in y dimension
     xm_per_pix = 3.7/700 # meters per pixel in x dimension
@@ -406,10 +406,10 @@ def process_image(fname):
     cv2.fillPoly(color_warp_3, np.int_([rect_pt]), (255,255,255))
     result = cv2.addWeighted(result, 1, color_warp_3, 0.15, 0)
     font = cv2.FONT_HERSHEY_SIMPLEX
-    if (left_curverad+right_curverad)/2 > 5000:
+    if left_curverad > 2500:
         text = '~Straight Road'
     else:
-        text = 'Curve radius: ' + '{:04.2f}'.format((left_curverad+right_curverad)/2) + 'm'
+        text = 'Curve radius: ' + '{:04.2f}'.format(left_curverad) + 'm'
     cv2.putText(result, text, (20,50), font, 1.2, (0,0,0), 2, cv2.LINE_AA)
     direction = ''
     if center_dist > 0:

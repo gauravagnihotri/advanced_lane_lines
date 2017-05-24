@@ -165,7 +165,7 @@ The calculated lane curvature and relative vehicle position is then displayed at
 
 | Original Project Video | Processed Project Video |
 |:---:|:---:|
-| [![Advanced Lane Finding Processed](https://i.ytimg.com/vi/akFd5a_rOwU/maxresdefault.jpg)](https://youtu.be/akFd5a_rOwU) | [![Advanced Lane Finding Processed](https://i.ytimg.com/vi/rRrMAY6gWtw/maxresdefault.jpg)](https://youtu.be/rRrMAY6gWtw) |
+| [![Advanced Lane Finding Processed](https://i.ytimg.com/vi/akFd5a_rOwU/maxresdefault.jpg)](https://youtu.be/akFd5a_rOwU) | [![Advanced Lane Finding Processed](https://i.ytimg.com/vi/O6bk-VpBiGM/maxresdefault.jpg)](https://youtu.be/O6bk-VpBiGM) |
 
 ---
 
