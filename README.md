@@ -32,7 +32,7 @@ The goals / steps of this project are the following:
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is contained in the Part 1 of 'adv_lane_lines.py' file.
+The code for this step and all other steps is contained in 'adv_lane_lines.py' file.
 The objpoints and img point arrays are initiated as empty arrays. The calibration image file is read using ```cv2.imread``` function.
 The ```cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)``` function converts a 3 channel colored image to a grayscale image. ```cv2.findChessboardCorners(gray, (nx, ny), None)``` function with correct gird parameters (in this case 6x9 corners) results into detected corners stored in an array which is then appended to imgpoints. The object points is prepared using ```np.mgrid[0:9,0:6].T.reshape(-1,2)``` which is further appended to objpoints. 
 
@@ -65,8 +65,8 @@ The ```cv2.undistort``` function is incorporated in the pipeline, so that distor
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
 After performing distortion correction, following combinations of thresholding functions are used to minimize everything but the lane lines.
-1. ```gradx = abs_sobel_thresh(inp_img, orient='x', sobel_kernel=ksize, thresh=(100, 100))``` Sobel Operator in X (line 212) 
-2. ```grady = abs_sobel_thresh(inp_img, orient='y', sobel_kernel=ksize, thresh=(85, 100))``` Sobel Operator in X (line 213)
+1. ```gradx = abs_sobel_thresh(inp_img, orient='x', sobel_kernel=ksize, thresh=(100, 100))``` Sobel Operator in X (line 253) 
+2. ```grady = abs_sobel_thresh(inp_img, orient='y', sobel_kernel=ksize, thresh=(85, 100))``` Sobel Operator in X (line 254)
 3. ```mag_binary = mag_thresh(inp_img, sobel_kernel=ksize, mag_thresh=(85, 150))``` Magnitude threshold (function mag_thresh - line 122 through 138)
 4. ```dir_binary = dir_threshold(inp_img, sobel_kernel=ksize, thresh=(0.7, 1.4))``` Direction threshold (function dir_threshold - line 139 through 152)
 5. ```color_binary = color_threshold(inp_img, s_thresh=(95, 255), v_thresh=(200, 255))#130,255 100,255``` Color Thresholding (function color_threshold - line 153 through 169)
@@ -74,7 +74,7 @@ After performing distortion correction, following combinations of thresholding f
 The sobel X and Y operators perform derivative operation in X and Y direction. 
 The magnitude thresholding is gradient of the square root of the sum of squares of the individual x and y. This type of thresholding smooths over the noisy intensity fluctuations on the small scale. [1] 
 'The direction of the gradient is simply the inverse tangent (arctangent) of the y gradient divided by the x gradient' [2] The direction gradient helps in picking out the particular feature from the image (in this case, the lane lines)[2]
-The color thresholding uses the HLS and HSV colorspaces for applying thresholds for a particular color value. In this case, I have used the combination of S and V color thresholding. The function ```color_threshold``` uses ```cv2.cvtColor(img, cv2.COLOR_BGR2HLS)``` and ```cv2.cvtColor(img, cv2.COLOR_BGR2HSV)``` to convert the image to HLS and HSV color spaces. Each image is then thresholded for S and V channel.  
+The color thresholding uses the HLS and HSV colorspaces for applying thresholds for a particular color value. In this case, I have used the combination of S and V color thresholding. The function ```color_threshold``` uses ```cv2.cvtColor(img, cv2.COLOR_BGR2HLS)``` and ```cv2.cvtColor(img, cv2.COLOR_BGR2HSV)``` to convert the image to HLS and HSV color spaces. Each image is then thresholded for S and V channel. (lines 253 through 261 
 
 | Undistorted Image | Thresholded Image |
 |:---:|:---:|
@@ -165,7 +165,10 @@ The calculated lane curvature and relative vehicle position is then displayed at
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-[![Advanced Lane Finding Processed](https://i.ytimg.com/vi/rRrMAY6gWtw/maxresdefault.jpg))](https://youtu.be/rRrMAY6gWtw)
+| Original Project Video | Processed Project Video |
+|:---:|:---:|
+| [![Advanced Lane Finding Processed](https://i.ytimg.com/vi/akFd5a_rOwU/maxresdefault.jpg)](https://youtu.be/akFd5a_rOwU) | [![Advanced Lane Finding Processed](https://i.ytimg.com/vi/rRrMAY6gWtw/maxresdefault.jpg)](https://youtu.be/rRrMAY6gWtw) |
+
 ---
 
 ### Discussion
@@ -178,3 +181,5 @@ Here I'll talk about the approach I took, what techniques I used, what worked an
 [1] Lesson 22 Magnitude of the Gradient - Project: Advanced Lane Finding 
 [2] Lesson 23 Direction of the Gradient - Project: Advanced Lane Finding 
 [3] Lesson 35 Measuring Curvature - Project: Advanced Lane Finding 
+0:00
+0:
