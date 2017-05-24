@@ -161,7 +161,7 @@ The calculated lane curvature and relative vehicle position is then displayed at
 
 ---
 
-### Pipeline (video)
+### Pipeline (video) [click on the image to open YouTube Video]
 
 | Original Project Video | Processed Project Video |
 |:---:|:---:|
