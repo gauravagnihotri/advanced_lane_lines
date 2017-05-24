@@ -25,6 +25,7 @@ The goals / steps of this project are the following:
 [image10]: ./output_images/output_1.jpg "Centroids of Lane Lines"
 [image11]: ./output_images/output_2.jpg "Curvefitted Line"
 [image12]: ./output_images/radius_calculation.png "Radius of Curvature"
+[image13]: ./output_images/test2_processed.jpg "Processed Unwarped Image"
 [video1]: ./project_video.mp4 "Video"
 
 ### Camera Calibration
@@ -141,13 +142,22 @@ left_fit_cr = np.polyfit(ploty*ym_per_pix, leftx*xm_per_pix, 2)
 right_fit_cr = np.polyfit(ploty*ym_per_pix, rightx*xm_per_pix, 2)
 ```
 ![alt text][image12]
+*Formula for calculating radius of curvature[3]*
 
+Using above formula the lane curvature radius is calculated and displayed on the resultant image in meters.
+
+Further, the left and right points detected from the convolution based window search are then used to fit left and right lane lines. 
+The car position is known at the center of the camera. The average of the left and right lane lines gives the center of the lane. 
+The car position and center lane position is then subtracted and multiplied by the pixel to real world conversion factor to obtain the relative position of the car w.r.t. center of the lane in meters. 
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+The curvefitted lane lines are then highlighted by plotting a polygon using ```cv2.fillPoly```
+The resultant image is then unwarped using the Minv matrix and using ```cv2.warpPerspective``` function
+The calculated lane curvature and relative vehicle position is then displayed at the corner of the image using ```cv2.putText```
 
-
+![alt text][image13]
+*Figure shows the processed image after drawing the polygon and displaying the curvature, position*
 
 ---
 
@@ -156,7 +166,7 @@ I implemented this step in lines # through # in my code in `yet_another_file.py`
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
 Here's a [link to my video result](./project_video.mp4)
-
+[![Advanced Lane Finding Processed](https://i.ytimg.com/vi/https://youtu.be/rRrMAY6gWtw/maxresdefault.jpg)](https://youtu.be/rRrMAY6gWtw)
 ---
 
 ### Discussion
@@ -168,3 +178,4 @@ Here I'll talk about the approach I took, what techniques I used, what worked an
 ### References 
 [1] Lesson 22 Magnitude of the Gradient - Project: Advanced Lane Finding 
 [2] Lesson 23 Direction of the Gradient - Project: Advanced Lane Finding 
+[3] Lesson 35 Measuring Curvature - Project: Advanced Lane Finding 

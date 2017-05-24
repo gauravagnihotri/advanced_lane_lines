@@ -395,7 +395,7 @@ def process_image(fname):
     '''
     height = binary_warped.shape[0]
     car_position = binary_warped.shape[1]/2
-    l_fit_x_int = left_fit[0]*height**2 + left_fit[1]*height + left_fit[2]
+    l_fit_x_int = left_fit[0]*height**2 + left_fit[1]*height + left_fit[2] #
     r_fit_x_int = right_fit[0]*height**2 + right_fit[1]*height + right_fit[2]
     lane_center_position = (r_fit_x_int + l_fit_x_int) /2
     center_dist = (car_position - lane_center_position) * xm_per_pix
@@ -422,20 +422,20 @@ def process_image(fname):
 '''
 test on images  
 '''
-import os
-path=os.listdir("test_images/")
-i=1
-for filename in path:
-    if fnmatch.fnmatch(filename, '*.jpg'):
-        image = cv2.imread("test_images/"+filename)
-        lane_det=process_image(image)
-        cv2.imwrite(os.getcwd() +'/output_images/'+filename[:-4]+'_processed.jpeg',lane_det)
-        i=i+1
+#import os
+#path=os.listdir("test_images/")
+#i=1
+#for filename in path:
+#    if fnmatch.fnmatch(filename, '*.jpg'):
+#        image = cv2.imread("test_images/"+filename)
+#        lane_det=process_image(image)
+#        cv2.imwrite(os.getcwd() +'/output_images/'+filename[:-4]+'_processed.jpeg',lane_det)
+#        i=i+1
 
 #Import everything needed to edit/save/watch video clips
-#from moviepy.editor import VideoFileClip
-#from IPython.display import HTML
-#white_output = 'challenge_proc.mp4'
-#clip1 = VideoFileClip("challenge_video.mp4")
-#white_clip = clip1.fl_image(process_image) #NOTE: this function expects color images!!
-#white_clip.write_videofile(white_output, audio=False)
+from moviepy.editor import VideoFileClip
+from IPython.display import HTML
+white_output = 'project_video_proc.mp4'
+clip1 = VideoFileClip("project_video.mp4")
+white_clip = clip1.fl_image(process_image) #NOTE: this function expects color images!!
+white_clip.write_videofile(white_output, audio=False)
