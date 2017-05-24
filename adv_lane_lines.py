@@ -422,20 +422,20 @@ def process_image(fname):
 '''
 test on images  
 '''
-#import os
-#path=os.listdir("test_images/")
-#i=1
-#for filename in path:
-#    if fnmatch.fnmatch(filename, '*.jpg'):
-#        image = cv2.imread("test_images/"+filename)
-#        lane_det=process_image(image)
-#        cv2.imwrite(os.getcwd() +'/output_images/'+filename[:-4]+'_processed.jpeg',lane_det)
-#        i=i+1
+import os
+path=os.listdir("test_images/")
+i=1
+for filename in path:
+    if fnmatch.fnmatch(filename, '*.jpg'):
+        image = cv2.imread("test_images/"+filename)
+        lane_det=process_image(image)
+        cv2.imwrite(os.getcwd() +'/output_images/'+filename[:-4]+'_processed.jpeg',lane_det)
+        i=i+1
 
 #Import everything needed to edit/save/watch video clips
-from moviepy.editor import VideoFileClip
-from IPython.display import HTML
-white_output = 'project_video_proc.mp4'
-clip1 = VideoFileClip("project_video.mp4")
-white_clip = clip1.fl_image(process_image) #NOTE: this function expects color images!!
-white_clip.write_videofile(white_output, audio=False)
+#from moviepy.editor import VideoFileClip
+#from IPython.display import HTML
+#white_output = 'project_video_proc.mp4'
+#clip1 = VideoFileClip("project_video.mp4")
+#white_clip = clip1.fl_image(process_image) #NOTE: this function expects color images!!
+#white_clip.write_videofile(white_output, audio=False)

@@ -21,9 +21,9 @@ The goals / steps of this project are the following:
 [image6]: ./output_images/test2_thresh_F.jpg "Thesholded Test Image"
 [image7]: ./output_images/test2_overlayed.jpg "Mask Overlayed Image"
 [image8]: ./output_images/test2_warped.jpg "Warped Image"
-[image9]: ./output_images/output.jpg "Lane Line Identifiers"
-[image10]: ./output_images/output_1.jpg "Centroids of Lane Lines"
-[image11]: ./output_images/output_2.jpg "Curvefitted Line"
+[image9]: ./output_images/test2_out1.jpg "Lane Line Identifiers"
+[image10]: ./output_images/test2_out2.jpg "Centroids of Lane Lines"
+[image11]: ./output_images/test2_out3.jpg "Curvefitted Line"
 [image12]: ./output_images/radius_calculation.png "Radius of Curvature"
 [image13]: ./output_images/test2_processed.jpeg "Processed Unwarped Image"
 [video1]: ./project_video.mp4 "Video"
@@ -105,7 +105,7 @@ To apply perspective transform, the 'M' matrix is first computed using ```M = cv
 Similarly the Minv is also computed by swapping the src and dst matrices. 
 
 To warp an image the 'M' matrix is used with function ```cv2.warpPerspective``` 
-Lines 231 through 238 in my code perform the perspective transform
+Lines 272 through 279 in my code perform the perspective transform
 
 | Source Points Overlayed | After applying Perspective Transform |
 |:---:|:---:|
@@ -163,8 +163,6 @@ The calculated lane curvature and relative vehicle position is then displayed at
 
 ### Pipeline (video)
 
-#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
-
 | Original Project Video | Processed Project Video |
 |:---:|:---:|
 | [![Advanced Lane Finding Processed](https://i.ytimg.com/vi/akFd5a_rOwU/maxresdefault.jpg)](https://youtu.be/akFd5a_rOwU) | [![Advanced Lane Finding Processed](https://i.ytimg.com/vi/rRrMAY6gWtw/maxresdefault.jpg)](https://youtu.be/rRrMAY6gWtw) |
@@ -175,11 +173,13 @@ The calculated lane curvature and relative vehicle position is then displayed at
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
+The camera calibration is performed in at first to calculate the distortion correction factors. The distortion correction code is implemented at the very beginning of the pipeline so that all images are corrected for distortion. The Sobel operator is used in X, Y, Magnitude, Direction along with S channel and V channel thresholding. Further, these thresholding techniques are combined to obtain an image with minimal unnecessary information. Perspective transform is then used to obtain 'birds eye view' of the lane in front of the car. The transformed image is then processed through a sliding window search code which uses convolution to identify the lane lines.
+
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
 
 ### References 
-[1] Lesson 22 Magnitude of the Gradient - Project: Advanced Lane Finding 
+[1] Lesson 22 Magnitude of the Gradient - Project: Advanced Lane Finding
+ 
 [2] Lesson 23 Direction of the Gradient - Project: Advanced Lane Finding 
+
 [3] Lesson 35 Measuring Curvature - Project: Advanced Lane Finding 
-0:00
-0:
