@@ -25,7 +25,7 @@ The goals / steps of this project are the following:
 [image10]: ./output_images/output_1.jpg "Centroids of Lane Lines"
 [image11]: ./output_images/output_2.jpg "Curvefitted Line"
 [image12]: ./output_images/radius_calculation.png "Radius of Curvature"
-[image13]: ./output_images/test2_processed.jpg "Processed Unwarped Image"
+[image13]: ./output_images/test2_processed.jpeg "Processed Unwarped Image"
 [video1]: ./project_video.mp4 "Video"
 
 ### Camera Calibration
@@ -165,8 +165,7 @@ The calculated lane curvature and relative vehicle position is then displayed at
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./project_video.mp4)
-[![Advanced Lane Finding Processed](https://i.ytimg.com/vi/https://youtu.be/rRrMAY6gWtw/maxresdefault.jpg)](https://youtu.be/rRrMAY6gWtw)
+[![Advanced Lane Finding Processed](https://i.ytimg.com/vi/rRrMAY6gWtw/maxresdefault.jpg))](https://youtu.be/rRrMAY6gWtw)
 ---
 
 ### Discussion
