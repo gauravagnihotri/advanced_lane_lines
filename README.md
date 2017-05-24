@@ -173,9 +173,13 @@ The calculated lane curvature and relative vehicle position is then displayed at
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-The camera calibration is performed in at first to calculate the distortion correction factors. The distortion correction code is implemented at the very beginning of the pipeline so that all images are corrected for distortion. The Sobel operator is used in X, Y, Magnitude, Direction along with S channel and V channel thresholding. Further, these thresholding techniques are combined to obtain an image with minimal unnecessary information. Perspective transform is then used to obtain 'birds eye view' of the lane in front of the car. The transformed image is then processed through a sliding window search code which uses convolution to identify the lane lines.
+The camera calibration is performed in at first to calculate the distortion correction factors. The distortion correction code is implemented at the very beginning of the pipeline so that all images are corrected for distortion. The Sobel operator is used in X, Y, Magnitude, Direction along with S channel and V channel thresholding. Further, these thresholding techniques are combined to obtain an image with minimal unnecessary information. Perspective transform is then used to obtain 'birds eye view' of the lane in front of the car. The transformed image is then processed through a sliding window search code which uses convolution to identify the lane lines. The identified hot spot points are then used to perform a polynomial curvefit of 2nd order to obtain a smooth lane line. This lane line is then unwarped using Perspective Transform along with lane section highlighting. The radius of lane curvature is calculated using the R_curve formula. The vehicle relative location is then calculated using center of lane and center of the camera calculation.
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+Shortcomings 
+1. The thresholding is limited to given lighting situation
+2. The perspective transform calculation is performed using hardcoded source and destination points. The transformation matrix may not work very well for steep curves.
+3. The combination of these techniques may not work very well in harsh climate (heavy rain, snow etc.)
+4. The current pipeline does not perform sanity checks, if the actual lane lines are blocked for some reason, the code may return garbage lane lines. 
 
 ### References 
 [1] Lesson 22 Magnitude of the Gradient - Project: Advanced Lane Finding
