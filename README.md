@@ -122,7 +122,6 @@ The curvefitted lines are the detected lane lines.
 |:---:|:---:|
 | ![alt text][image8] | ![alt text][image9] |
 | Centers of the regions of interest | Curvefitted line through the points |
-|:---:|:---:|
 | ![alt text][image10] | ![alt text][image11] |
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
