@@ -46,14 +46,15 @@ for fname in images:
         
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
-with open(os.getcwd() + '/calibration_pickle.p','wb') as f:
+with open(os.getcwd() + '/calibration_pickle.p','wb') as f: #this will dump all values to a pickle file
     pickle.dump(ret,f)
     pickle.dump(mtx,f)
     pickle.dump(dist,f)
     pickle.dump(rvecs,f)
     pickle.dump(tvecs,f)
 '''
-the following code can undistort camera calibration images
+the following code can undistort camera calibration images [ignore this section]
+
 '''
 #for fname in images:
 #    img = cv2.imread(fname)
@@ -70,7 +71,7 @@ ret, mtx, dist, rvecs, tvecs - these arrays complete camera calibration
 '''
 Part 2 
 '''
-with open(os.getcwd() + '/calibration_pickle.p','rb') as f:
+with open(os.getcwd() + '/calibration_pickle.p','rb') as f: #this will load all values from a pickle file
     ret = pickle.load(f)
     mtx = pickle.load(f)
     dist = pickle.load(f)
@@ -78,8 +79,8 @@ with open(os.getcwd() + '/calibration_pickle.p','rb') as f:
     tvecs = pickle.load(f)
 
 '''
-test if undistortion works fine //
-'''
+[ignore this section]
+
 #img = cv2.imread(os.getcwd() +'/camera_cal/calibration1.jpg')
 #undist = cv2.undistort(img, mtx, dist, None, mtx)
 #f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 15))
@@ -90,7 +91,7 @@ test if undistortion works fine //
 #ax2.set_title('Undistorted Image', fontsize=15)
 #plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
 '''
-This works fine, commenting out temporarily // 
+#This works fine
 '''
 # Step 2.1 Color Space Change
 ############################################### funciton to laod test images and undistort them //
@@ -100,7 +101,7 @@ This works fine, commenting out temporarily //
 ###############################################
 #test_img = mpimg.imread(os.getcwd() +'/test_images/undistorted_test5.jpg')
 ################################################
-
+'''
 def abs_sobel_thresh(img, orient='x', sobel_kernel=3, thresh=(0, 255)):
     # Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -167,7 +168,7 @@ def color_threshold(img, s_thresh=(0, 255), v_thresh=(0, 255)):
     color_binary = np.zeros_like(s_channel)
     color_binary[(s_binary == 1) & (v_binary == 1)] = 1
     return color_binary
-def region_of_interest(img, vertices):
+def region_of_interest(img, vertices): #this was not used in advanced lane finding project
     """
     Applies an image mask.
     
@@ -234,29 +235,29 @@ def find_window_centroids(image, window_width, window_height, margin):
 	    window_centroids.append((l_center,r_center))
 
     return window_centroids
-
+''' the pipeline begins here '''
 def process_image(fname):
     #img = cv2.imread(fname)
     img = fname
     #image_name=os.path.split(fname)[1]
-    undist = cv2.undistort(img, mtx, dist, None, mtx)
+    undist = cv2.undistort(img, mtx, dist, None, mtx) #perform distortion correction
     cv2.imwrite(os.getcwd() +'/output_images/'+'undist.jpg',undist) 
     ksize = 13 # Choose a larger odd number to smooth gradient measurements
     inp_img = cv2.imread(os.getcwd() + '/output_images/undist.jpg')
 
-#    ##############################################################################################
-#    '''
-#    you may have to play with these thresholds 
-#    '''
-#    ##############################################################################################
-#    # Apply each of the thresholding functions
+    ##############################################################################################
+    '''
+    Thresholding functionality 
+    '''
+    ##############################################################################################
+    # Apply each of the thresholding functions
     gradx = abs_sobel_thresh(inp_img, orient='x', sobel_kernel=ksize, thresh=(100, 100))
     grady = abs_sobel_thresh(inp_img, orient='y', sobel_kernel=ksize, thresh=(85, 100)) #85,100
     mag_binary = mag_thresh(inp_img, sobel_kernel=ksize, mag_thresh=(85, 150))
     dir_binary = dir_threshold(inp_img, sobel_kernel=ksize, thresh=(0.7, 1.4))
     color_binary = color_threshold(inp_img, s_thresh=(95, 255), v_thresh=(200, 255))#130,255 100,255
     ##############################################################################################
-    # combining
+    # combining all the thresholds
     combined = np.zeros_like(inp_img)
     combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1)) | (color_binary == 1)] = 255
     #combined[(gradx == 1) | ((mag_binary == 1) & (dir_binary == 1)) | (color_binary == 1)] = 255
