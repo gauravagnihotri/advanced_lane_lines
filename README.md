@@ -24,6 +24,7 @@ The goals / steps of this project are the following:
 [image9]: ./output_images/output.jpg "Lane Line Identifiers"
 [image10]: ./output_images/output_1.jpg "Centroids of Lane Lines"
 [image11]: ./output_images/output_2.jpg "Curvefitted Line"
+[image12]: ./output_images/radius_calculation.png "Radius of Curvature"
 [video1]: ./project_video.mp4 "Video"
 
 ### Camera Calibration
@@ -116,7 +117,6 @@ Lines 231 through 238 in my code perform the perspective transform
 The convolution method is used here to identify the lane lines. 
 Function ```find_window_centroids``` from line 201 thru	236 performs the image slicing, convolution to find the lane hotspots.
 The identified region is stored in left and right point matrices which are then used to perform a curvefit using ```np.polyfit``` of 2nd order.
-The curvefitted lines are the detected lane lines. 
 
 | Original Warped Image | Hot spots from the warped Image |
 |:---:|:---:|
@@ -124,15 +124,30 @@ The curvefitted lines are the detected lane lines.
 | Centers of the regions of interest | Curvefitted line through the points |
 | ![alt text][image10] | ![alt text][image11] |
 
+*Figures show the warped image, output of sliding window search using convolution, centers of the hotspots and curvefitted lines *
+
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+Based on US road regulations (3.7 meter wide minimum lane width) and from a sample image the lane section is approximately 30 m long, the pixel to real world conversion factors are calculated. Lines 355 through 364 show the radius of curvature implementation. 
+```
+ym_per_pix = 30/720 # meters per pixel in y dimension
+xm_per_pix = 3.7/700 # meters per pixel in x dimension
+```
+
+The polynomials are then fit to real world x and y dimensions (line
+```
+# Fit new polynomials to x,y in world space
+left_fit_cr = np.polyfit(ploty*ym_per_pix, leftx*xm_per_pix, 2)
+right_fit_cr = np.polyfit(ploty*ym_per_pix, rightx*xm_per_pix, 2)
+```
+![alt text][image12]
+
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
 I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
 
-![alt text][image6]
+
 
 ---
 
